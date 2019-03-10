@@ -2,6 +2,7 @@ package Scenes;
 
 import DabRhythm.Beat;
 import DabRhythm.Beats;
+import DabRhythm.Main;
 import Entities.*;
 import Entities.Components.*;
 import GUI.AbstractMenu;
@@ -15,7 +16,11 @@ public class SongBrowserScene extends Scene {
                 {
                     menu = new AbstractMenu() {
                         {
-                            
+                            float width = 50;
+                            float posx = Main.engine.getMainWindow().getWidth() - width;
+                            for(Beat b : Beats.beats){
+                                
+                            }
                         }
                     };
                 }
