@@ -9,17 +9,14 @@ import System.System;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import Components.CBatchable;
-import Components.CSprite;
+import Entities.Components.CSprite;
 import DabEngineResources.DabEngineResources;
 import Entities.*;
-import Entities.Components.CRender;
+import Graphics.Graphics;
 import Entities.Components.CTransform;
 import GUI.Components.CText;
 
 public class SpriteRenderSystem extends System {
-
-    private final SpriteBatch sb = new SpriteBatch();
 
     @Override
     public void update() {
@@ -27,14 +24,14 @@ public class SpriteRenderSystem extends System {
     }
 
     @Override
-    public void render() {
-        sb.begin();
-        for(Entity e : EntityManager.entitiesWithComponents(CBatchable.class, CSprite.class)){
-            CRender render = e.getComponent(CRender.class);
+    public void render(Graphics g) {
+        g.getBatch(SpriteBatch.class).begin();
+        for(Entity e : EntityManager.entitiesWithComponents(CTransform.class, CSprite.class)){
+            CSprite sprite = e.getComponent(CSprite.class);
             CTransform transform = e.getComponent(CTransform.class);
-            sb.draw(render.texture, new Vector4f(transform.pos.x, transform.pos.y, transform.size.x, transform.size.y), render.color, render.center_anchor);
+            g.getBatch(SpriteBatch.class).draw(sprite.texture, new Vector4f(transform.pos.x, transform.pos.y, transform.size.x, transform.size.y), sprite.color, sprite.center_anchor);
         }
-        sb.end();
+        g.getBatch(SpriteBatch.class).end();
     }
 
 }

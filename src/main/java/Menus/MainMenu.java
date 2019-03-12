@@ -5,6 +5,7 @@ import org.joml.Vector4f;
 
 import DabRhythm.Main;
 import GUI.*;
+import GUI.Objects.Panel;
 import Graphics.Models.Texture;
 import Input.KeyEvent;
 import Input.MouseEvent;
@@ -17,6 +18,12 @@ import static org.lwjgl.glfw.GLFW.*;
 public class MainMenu extends AbstractMenu {
     
     public MainMenu(){
+        Panel panel = new Panel(){
+            {
+                pos = new Vector2f(0);
+                size = new Vector2f(Main.engine.getMainWindow().getWidth(), Main.engine.getMainWindow().getHeight());
+            }
+        };
         GUIObject start = new GUIObject(){
 
             {
@@ -117,7 +124,9 @@ public class MainMenu extends AbstractMenu {
             }
         };
 
-        obj.add(start);
-        obj.add(exit);
+        panel.addToPanel(start);
+        panel.addToPanel(exit);
+
+        obj.add(panel);
     }
 }

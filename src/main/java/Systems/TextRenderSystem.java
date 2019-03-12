@@ -3,9 +3,8 @@ package Systems;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import Components.CBatchable;
 import DabEngineResources.DabEngineResources;
-import Entities.Components.CRender;
+import Graphics.Graphics;
 import Entities.Components.CTransform;
 import GUI.Components.CText;
 import Graphics.Batch.TextBatch;
@@ -14,8 +13,6 @@ import System.System;
 import Entities.*;
 
 public class TextRenderSystem extends System {
-
-    private final TextBatch tb = new TextBatch(new Texture(DabEngineResources.class, "Fonts/Consolas_font.png", 16, 16));
     
     @Override
     public void update() {
@@ -23,15 +20,14 @@ public class TextRenderSystem extends System {
     }
 
     @Override
-    public void render() {
-        tb.begin();
-        for(Entity e : EntityManager.entitiesWithComponents(CBatchable.class, CText.class)){
+    public void render(Graphics g) {
+        g.getBatch(TextBatch.class).begin();
+        for(Entity e : EntityManager.entitiesWithComponents(CTransform.class, CText.class)){
             CText text = e.getComponent(CText.class);
-            CRender render = e.getComponent(CRender.class);
             CTransform transform = e.getComponent(CTransform.class);
-            tb.draw(text.text, transform.pos.x, transform.pos.y, transform.size.y, new Vector4f(render.color.x, render.color.y, render.color.z, render.color.w));
+            g.getBatch(TextBatch.class).draw(text.text, transform.pos.x, transform.pos.y, transform.size.y, new Vector4f(text.color.x, text.color.y, text.color.z, text.color.w));
         }
-        tb.end();
+        g.getBatch(TextBatch.class).end();
     }
 
 }

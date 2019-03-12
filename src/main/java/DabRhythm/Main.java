@@ -19,11 +19,12 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.glfw.GLFW.*;
 
 import java.util.HashMap;
+import Graphics.Graphics;
 
 public class Main extends App {
 
     public static final Engine engine = new Engine();
-    public static SpriteBatch mainbatch;
+    private Graphics graphics;
 
     {
         WIDTH = 800;
@@ -40,18 +41,19 @@ public class Main extends App {
     public void init() {
         ProjectionMatrix.createProjectionMatrix2D(0, engine.getMainWindow().getWidth(),
                 engine.getMainWindow().getHeight(), 0);
-        mainbatch = new SpriteBatch();
+        graphics = engine.createGraphics();
 
         SceneManager.addScene(new IntroScene());
         SceneManager.addScene(new MenuScene());
         SceneManager.addScene(new SongBrowserScene());
 
         SceneManager.setCurrentScene(SceneManager.getScene(IntroScene.class));
+        glEnable(GL_SCISSOR_TEST);
     }
 
     public void render() {
         glClear(GL_COLOR_BUFFER_BIT);
-        SceneManager.getCurrentScene().render();
+        SceneManager.getCurrentScene().render(graphics);
     }
 
     public void update() {

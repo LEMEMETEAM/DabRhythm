@@ -1,7 +1,6 @@
 package Scenes;
 
 import Entities.*;
-import Entities.Components.CRender;
 import Entities.Components.CTransform;
 import GUI.Components.CText;
 import Graphics.Models.Texture;
@@ -11,9 +10,8 @@ import Systems.TextRenderSystem;
 
 import org.joml.*;
 
-import Components.CBatchable;
 import Components.CFade;
-import Components.CSprite;
+import Entities.Components.CSprite;
 import DabRhythm.Main;
 import Utils.*;
 
@@ -23,7 +21,7 @@ public class IntroScene extends Scene {
     public void init() {
         EntityManager.entities.clear();
         Entity background = EntityManager.createEntity(
-            new CRender(){
+            new CSprite(){
                 {
                     texture = new Texture("src/main/resources/bg.jpg");
                     color = new Vector4f(1, 1, 1, 0);
@@ -35,8 +33,6 @@ public class IntroScene extends Scene {
                     size = new Vector2f(Main.engine.getMainWindow().getWidth(), Main.engine.getMainWindow().getWidth());
                 }
             },
-            new CBatchable(),
-            new CSprite(),
             new CFade(){
                 {
                     time = 3;
@@ -47,11 +43,6 @@ public class IntroScene extends Scene {
         );
 
         Entity text = EntityManager.createEntity(
-            new CRender(){
-                {
-                    color = new Vector4f(1, 1, 1, 0);
-                }
-            },
             new CTransform(){
                 {
                     pos = new Vector2f(25, Main.engine.getMainWindow().getHeight()/2);
@@ -61,9 +52,9 @@ public class IntroScene extends Scene {
             new CText(){
                 {
                     text = "DabRhythm";
+                    color = new Vector4f(1, 1, 1, 0);
                 }
             },
-            new CBatchable(),
             new CFade(){
                 {
                     time = 3;

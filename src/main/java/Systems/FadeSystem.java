@@ -5,9 +5,10 @@ import System.System;
 import java.util.logging.Level;
 
 import Components.CFade;
+import Entities.Components.CSprite;
 import DabRhythm.Main;
 import Entities.*;
-import Entities.Components.CRender;
+import Graphics.Graphics;
 
 public class FadeSystem extends System {
 
@@ -16,27 +17,27 @@ public class FadeSystem extends System {
 
     @Override
     public void update() {
-        for(Entity e : EntityManager.entitiesWithComponents(CFade.class, CRender.class)){
+        for(Entity e : EntityManager.entitiesWithComponents(CFade.class, CSprite.class)){
             CFade f = e.getComponent(CFade.class);
-            CRender r = e.getComponent(CRender.class);
+            CSprite s = e.getComponent(CSprite.class);
 
             if(f.in_or_out == 0 && f.in_and_out == 0){
-                r.color.w += 1.0 / (f.time * Main.engine.TARGET_FPS);
-                if(r.color.w == 1.0){
+                s.color.w += 1.0 / (f.time * Main.engine.TARGET_FPS);
+                if(s.color.w == 1.0){
                     e.removeComponent(CFade.class);
                 }
             }
             else if(f.in_or_out == 1){
-                r.color.w -= 1.0 / (f.time * Main.engine.TARGET_FPS);
-                if(r.color.w == 0.0){
+                s.color.w -= 1.0 / (f.time * Main.engine.TARGET_FPS);
+                if(s.color.w == 0.0){
                     e.removeComponent(CFade.class);
                 }
             }
             else if(f.in_and_out == 1){
                 if(in){
                     f.in = true;
-                    r.color.w += 1.0 / (f.time * Main.engine.TARGET_FPS);
-                    if(r.color.w >= 1.0){
+                    s.color.w += 1.0 / (f.time * Main.engine.TARGET_FPS);
+                    if(s.color.w >= 1.0){
                         in = false;
                         f.in = false;
                         waiting = true;
@@ -53,8 +54,8 @@ public class FadeSystem extends System {
                     }
                 }
                 if(out){
-                    r.color.w -= 1.0 / (f.time * Main.engine.TARGET_FPS);
-                    if(r.color.w <= 0){
+                    s.color.w -= 1.0 / (f.time * Main.engine.TARGET_FPS);
+                    if(s.color.w <= 0){
                         e.removeComponent(CFade.class);
                         out = false;
                         f.out = false;
@@ -65,7 +66,7 @@ public class FadeSystem extends System {
     }
 
     @Override
-    public void render() {
+    public void render(Graphics g) {
 
     }
     
