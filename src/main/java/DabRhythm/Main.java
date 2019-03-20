@@ -43,12 +43,13 @@ public class Main extends App {
                 engine.getMainWindow().getHeight(), 0);
         graphics = engine.createGraphics();
 
+        Beats.updateList();
+
         SceneManager.addScene(new IntroScene());
         SceneManager.addScene(new MenuScene());
         SceneManager.addScene(new SongBrowserScene());
 
         SceneManager.setCurrentScene(SceneManager.getScene(IntroScene.class));
-        glEnable(GL_SCISSOR_TEST);
     }
 
     public void render() {

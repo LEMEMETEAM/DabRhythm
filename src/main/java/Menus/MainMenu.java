@@ -5,7 +5,9 @@ import org.joml.Vector4f;
 
 import DabRhythm.Main;
 import GUI.*;
+import GUI.Objects.Button;
 import GUI.Objects.Panel;
+import Graphics.Batch.Polygon;
 import Graphics.Models.Texture;
 import Input.KeyEvent;
 import Input.MouseEvent;
@@ -24,103 +26,80 @@ public class MainMenu extends AbstractMenu {
                 size = new Vector2f(Main.engine.getMainWindow().getWidth(), Main.engine.getMainWindow().getHeight());
             }
         };
-        GUIObject start = new GUIObject(){
+        Button start = new Button(){
 
             {
-                pos = new Vector2f(Main.engine.getMainWindow().getWidth()/2, (Main.engine.getMainWindow().getHeight()/2)-40);
+                pos = new Vector2f(Main.engine.getMainWindow().getWidth()/2, (Main.engine.getMainWindow().getHeight()/2)-45);
                 size = new Vector2f(88, 40);
 
-                tex = new Texture("src/main/resources/button_start.png");
-                color = new Vector4f(1);
+                label = "Start";
+                poly = new Polygon(
+                    new int[]{
+                        0,1,2,
+                        0,3,2
+                    }, 
+                    new Vector2f[]{
+                        new Vector2f(-1, 1),
+                        new Vector2f(-1, -1),
+                        new Vector2f(1, -1),
+                        new Vector2f(1, 1)
+                    }
+                );
+                color = new Vector4f(0.24f, 0.52f, 0.78f, 1f);
+                label_color = new Vector4f(1);
             }
-        
-            @Override
-            public void onNotify(Event e) {
-                
-            }
-        
-            @Override
-            public void onMouseRelease(MouseEvent e) {
-                
-            }
-        
-            @Override
-            public void onMousePress(MouseEvent e) {
-                if(hover && e.getButton() == GLFW_MOUSE_BUTTON_LEFT){
-                    SceneManager.setCurrentScene(SceneManager.getScene(SongBrowserScene.class));
-                }
-            }
-        
-            @Override
-            public void onKeyRelease(KeyEvent e) {
-                
-            }
-        
-            @Override
-            public void onKeyPress(KeyEvent e) {
-                
-            }
-        
+
             @Override
             public void onHover() {
-                tex = new Texture("src/main/resources/button_start_pressed.png");
-                hover = true;
+                super.onHover();
+                color = new Vector4f(0.03f, 0.22f, 0.39f, 1f);
             }
-        
+
             @Override
             public void onExit() {
-                tex = new Texture("src/main/resources/button_start.png");
-                hover = false;
+                super.onExit();
+                color = new Vector4f(0.24f, 0.52f, 0.78f, 1f);
             }
         };
 
-        GUIObject exit = new GUIObject(){
+        Button exit = new Button(){
 
             {
-                pos = new Vector2f(Main.engine.getMainWindow().getWidth()/2, (Main.engine.getMainWindow().getHeight()/2)+40);
-                size = new Vector2f(76, 40);
+                pos = new Vector2f(Main.engine.getMainWindow().getWidth()/2, (Main.engine.getMainWindow().getHeight()/2)+45);
+                size = new Vector2f(88, 40);
 
-                tex = new Texture("src/main/resources/button_exit.png");
-                color = new Vector4f(1);
+                label = "Exit";
+                poly = new Polygon(
+                    new int[]{
+                        0,1,2,
+                        0,3,2
+                    }, 
+                    new Vector2f[]{
+                        new Vector2f(-1, 1),
+                        new Vector2f(-1, -1),
+                        new Vector2f(1, -1),
+                        new Vector2f(1, 1)
+                    }
+                );
+                color = new Vector4f(0.24f, 0.52f, 0.78f, 1f);
+                label_color = new Vector4f(1);
             }
-        
-            @Override
-            public void onNotify(Event e) {
-                
-            }
-        
-            @Override
-            public void onMouseRelease(MouseEvent e) {
-                
-            }
-        
-            @Override
-            public void onMousePress(MouseEvent e) {
-                if(hover && e.getButton() == GLFW_MOUSE_BUTTON_LEFT){
-                    Main.engine.end();
-                }
-            }
-        
-            @Override
-            public void onKeyRelease(KeyEvent e) {
-                
-            }
-        
-            @Override
-            public void onKeyPress(KeyEvent e) {
-                
-            }
-        
+            
             @Override
             public void onHover() {
-                tex = new Texture("src/main/resources/button_exit_pressed.png");
-                hover = true;
+                super.onHover();
+                color = new Vector4f(0.03f, 0.22f, 0.39f, 1f);
             }
-        
+
             @Override
             public void onExit() {
-                tex = new Texture("src/main/resources/button_exit.png");
-                hover = false;
+                super.onExit();
+                color = new Vector4f(0.24f, 0.52f, 0.78f, 1f);
+            }
+
+            @Override
+            public void action() {
+                Main.engine.end();
             }
         };
 

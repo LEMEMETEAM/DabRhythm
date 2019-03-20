@@ -24,7 +24,8 @@ public class BeatLoader {
                             String line;
                             while((line = r.readLine()) != null){
                                 String[] beat_lane_type = line.split(" ");
-                                hits.add(Integer.valueOf(beat_lane_type[0]),  Integer.valueOf(beat_lane_type[1]));
+                                if(beat_lane_type[0].equals("Song:")) continue;
+                                hits.put(Integer.valueOf(beat_lane_type[0]),  Integer.valueOf(beat_lane_type[1]));
                             }
                         }
                         catch(IOException e){

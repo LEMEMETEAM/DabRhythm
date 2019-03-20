@@ -29,6 +29,23 @@ repositories {
    }
 }
 
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+	manifest {
+        attributes 'Implementation-Title': 'DabRhythm',  
+        	'Implementation-Version': '0.0.1',
+        	'Main-Class': 'DabRhythm.Main'
+    }
+    archiveClassifier = 'uber'
+
+    from sourceSets.main.output
+
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    }
+}
+
 dependencies {
     // This dependency is found on compile classpath of this component and consumers.
     //implementation 'com.google.guava:guava:27.0.1-jre'
