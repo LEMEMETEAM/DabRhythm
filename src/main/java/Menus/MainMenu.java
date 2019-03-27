@@ -47,6 +47,8 @@ public class MainMenu extends AbstractMenu {
                 );
                 color = new Vector4f(0.24f, 0.52f, 0.78f, 1f);
                 label_color = new Vector4f(1);
+                label_pos = new Vector2f(0);
+                label_size = 24f;
             }
 
             @Override
@@ -59,6 +61,11 @@ public class MainMenu extends AbstractMenu {
             public void onExit() {
                 super.onExit();
                 color = new Vector4f(0.24f, 0.52f, 0.78f, 1f);
+            }
+
+            @Override
+            public void action() {
+                SceneManager.setCurrentScene(SceneManager.getScene(SongBrowserScene.class));
             }
         };
 
@@ -83,6 +90,8 @@ public class MainMenu extends AbstractMenu {
                 );
                 color = new Vector4f(0.24f, 0.52f, 0.78f, 1f);
                 label_color = new Vector4f(1);
+                label_pos = new Vector2f(0);
+                label_size = 24f;
             }
             
             @Override

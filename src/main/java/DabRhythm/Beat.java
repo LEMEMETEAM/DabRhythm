@@ -9,8 +9,10 @@ import Graphics.Models.Texture;
 public class Beat {
 
     public Audio audioFile;
-    public final HashMap<Integer, Integer> hits = new HashMap<>();
+    public final HashMap<Float, String> hits = new HashMap<>();
     public Texture background;
     public int id;
-
+    public String title;
+    public float BPM;
+    
 }

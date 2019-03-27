@@ -65,4 +65,12 @@ public class Main extends App {
         engine.init(new Main());
         engine.run();
     }
+
+    public static class Config {
+
+        public static int left_arrow_button = GLFW_KEY_D, 
+        up_arrow_button = GLFW_KEY_F, 
+        down_arrow_button = GLFW_KEY_J, 
+        right_arrow_button = GLFW_KEY_K;
+    }
 }

@@ -14,7 +14,8 @@ public class BeatLoader {
 
     public static Beat load(final File directory){
         return new Beat(){
-            {
+            {   
+                title = directory.getName().split(" - ")[1];
                 for(final File f : directory.listFiles()){
                     if(f.getName().contains(".wav") || f.getName().contains(".mp3")){
                         audioFile = new Audio(f.getAbsolutePath());
@@ -25,7 +26,11 @@ public class BeatLoader {
                             while((line = r.readLine()) != null){
                                 String[] beat_lane_type = line.split(" ");
                                 if(beat_lane_type[0].equals("Song:")) continue;
-                                hits.put(Integer.valueOf(beat_lane_type[0]),  Integer.valueOf(beat_lane_type[1]));
+                                if(beat_lane_type[0].equals("BPM:")){ 
+                                    BPM = Float.parseFloat(beat_lane_type[1]);
+                                    continue;
+                                }
+                                hits.put(Float.valueOf(beat_lane_type[0]),  beat_lane_type[1]);
                             }
                         }
                         catch(IOException e){

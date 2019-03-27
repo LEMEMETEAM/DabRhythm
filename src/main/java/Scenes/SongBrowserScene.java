@@ -17,16 +17,7 @@ public class SongBrowserScene extends Scene {
         Entity scroll = EntityManager.createEntity(
             new CMenu(){
                 {
-                    /* menu = new AbstractMenu() {
-                        {
-                            float width = 50;
-                            float posx = Main.engine.getMainWindow().getWidth() - width;
-                            for(Beat b : Beats.beats){
-                                
-                            }
-                        }
-                    }; */
-                    menu = new ScrollMenu();
+                    menu = new SongBrowserMenu();
                 }
             }
         );
