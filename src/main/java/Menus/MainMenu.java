@@ -19,6 +19,8 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class MainMenu extends AbstractMenu {
     
+    private boolean main_button_pressed_once;
+
     public MainMenu(){
         Panel panel = new Panel(){
             {
@@ -26,10 +28,11 @@ public class MainMenu extends AbstractMenu {
                 size = new Vector2f(Main.engine.getMainWindow().getWidth(), Main.engine.getMainWindow().getHeight());
             }
         };
+    
         Button start = new Button(){
 
             {
-                pos = new Vector2f(Main.engine.getMainWindow().getWidth()/2, (Main.engine.getMainWindow().getHeight()/2)-45);
+                pos = new Vector2f((Main.engine.getMainWindow().getWidth()/2)+200f, (Main.engine.getMainWindow().getHeight()/2)-45);
                 size = new Vector2f(88, 40);
 
                 label = "Start";
@@ -72,7 +75,7 @@ public class MainMenu extends AbstractMenu {
         Button exit = new Button(){
 
             {
-                pos = new Vector2f(Main.engine.getMainWindow().getWidth()/2, (Main.engine.getMainWindow().getHeight()/2)+45);
+                pos = new Vector2f((Main.engine.getMainWindow().getWidth()/2)+200f, (Main.engine.getMainWindow().getHeight()/2)+45);
                 size = new Vector2f(88, 40);
 
                 label = "Exit";
@@ -112,8 +115,64 @@ public class MainMenu extends AbstractMenu {
             }
         };
 
-        panel.addToPanel(start);
-        panel.addToPanel(exit);
+        Button main_button = new Button(){
+            {
+                pos = new Vector2f(Main.engine.getMainWindow().getWidth()/2, Main.engine.getMainWindow().getHeight()/2);
+                size = new Vector2f(Main.engine.getMainWindow().getHeight()*0.65f);
+
+                label = "DabRhythm";
+                poly = new Polygon(
+                    new int[]{
+                        0,1,2,
+                        0,3,2
+                    },
+                    new Vector2f[]{
+                        new Vector2f(-1, -1),
+                        new Vector2f(-1, 1),
+                        new Vector2f(1, 1),
+                        new Vector2f(1, -1)
+                    }
+                );
+                color = new Vector4f(0.45f);
+                label_color = new Vector4f(1);
+                label_size = 72f;
+                label_pos = new Vector2f(0);
+            }
+
+            @Override
+            public void onHover() {
+                super.onHover();
+                size = new Vector2f((Main.engine.getMainWindow().getHeight()*0.65f)+50f);
+                label_size = 72f+50f;
+            }
+
+            @Override
+            public void onExit() {
+                super.onExit();
+                size = new Vector2f((Main.engine.getMainWindow().getHeight()*0.65f)-50f);
+                label_size = 72f;
+            }
+
+            @Override
+            public void action() {
+                if(!main_button_pressed_once){
+                    pos.x -= 100f;
+                    main_button_pressed_once = true;
+                    panel.addToPanel(start);
+                    panel.addToPanel(exit);
+                    return;
+                }
+                if(main_button_pressed_once){
+                    pos.x += 100f;
+                    main_button_pressed_once = false;
+                    panel.panel_objects.remove(start);
+                    panel.panel_objects.remove(exit);
+                    return;
+                }
+            }
+        };
+
+        panel.addToPanel(main_button);
 
         obj.add(panel);
     }

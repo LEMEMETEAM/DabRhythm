@@ -5,8 +5,10 @@ package DabRhythm;
 
 import Core.App;
 import Core.Engine;
+import Entities.EntityManager;
 import Graphics.ProjectionMatrix;
 import Graphics.Batch.SpriteBatch;
+import Graphics.Models.Texture;
 import Menus.MainMenu;
 import Scenes.IntroScene;
 import Scenes.MenuScene;
@@ -59,6 +61,7 @@ public class Main extends App {
 
     public void update() {
         SceneManager.getCurrentScene().tick();
+        //System.out.println(EntityManager.entities.toString());
     }
 
     public static void main(String[] args) {
@@ -72,5 +75,22 @@ public class Main extends App {
         up_arrow_button = GLFW_KEY_F, 
         down_arrow_button = GLFW_KEY_J, 
         right_arrow_button = GLFW_KEY_K;
+    }
+
+    public static class Skin {
+
+        public static String skin_name;
+
+        public static final Texture[] mania_key = new Texture[4];
+        public static final Texture[] mania_key_down = new Texture[4];
+        public static final Texture[] note = new Texture[4];
+
+        public static final Texture[] score = new Texture[10];
+        public static final Texture[] normal = new Texture[10];
+        public static final Texture[] combo = new Texture[10];
+
+        public static Texture score_percent;
+        public static Texture score_x;
+
     }
 }

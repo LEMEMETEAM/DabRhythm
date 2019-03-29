@@ -17,9 +17,9 @@ public class SongBrowserMenu extends AbstractMenu {
 
     private Image current_song_image = new Image(){
         {
-            this.pos = new Vector2f(Main.engine.getMainWindow().getWidth()/2, Main.engine.getMainWindow().getHeight()/2);
-            this.size = new Vector2f(Main.engine.getMainWindow().getWidth(), Main.engine.getMainWindow().getHeight());
-            color = new Vector4f(1);
+            pos = new Vector2f(Main.engine.getMainWindow().getWidth()/2, Main.engine.getMainWindow().getHeight()/2);
+            size = new Vector2f(Main.engine.getMainWindow().getWidth(), Main.engine.getMainWindow().getHeight());
+            color = new Vector4f(0.25f, 0.25f, 0.25f, 0.5f);
         }
     };
     
@@ -36,8 +36,8 @@ public class SongBrowserMenu extends AbstractMenu {
                         new Button(){
                             {   
                                 label = b.title;
-                                this.size = new Vector2f(250, 100);
-                                this.pos = new Vector2f(0, size.y * index);
+                                size = new Vector2f(550, 100);
+                                pos = new Vector2f(0, size.y * index);
                                 color= new Vector4f(0.5f);
                                 label_color = new Vector4f(1);
                                 label_pos = new Vector2f(0.0f);
@@ -92,8 +92,8 @@ public class SongBrowserMenu extends AbstractMenu {
         };
         Panel main_panel = new Panel(){
             {
-                this.pos = new Vector2f(0);
-                this.size = new Vector2f(Main.engine.getMainWindow().getWidth(), Main.engine.getMainWindow().getHeight());
+                pos = new Vector2f(0);
+                size = new Vector2f(Main.engine.getMainWindow().getWidth(), Main.engine.getMainWindow().getHeight());
                 addToPanel(current_song_image);
                 addToPanel(scroll);
 

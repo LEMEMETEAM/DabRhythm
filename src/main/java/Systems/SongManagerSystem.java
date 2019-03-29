@@ -6,7 +6,6 @@ import Utils.Timer;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
-import Audio.Audio;
 import DabRhythm.Beat;
 import Factories.NoteFactory;
 import Graphics.Graphics;
@@ -40,7 +39,7 @@ public class SongManagerSystem extends System {
     public void update() {
         if(GameScene.beat_start){
             if(!executed){
-                beat.audioFile.playSample();
+                beat.audioFile.play();
                 executed = true;
             }
             songPosInBeats = (beat.audioFile.getSamplePos()/1000000f) / secPerBeat; 

@@ -7,7 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
-import Audio.Audio;
+import Audio.Music;
 import Graphics.Models.Texture;
 
 public class BeatLoader {
@@ -18,7 +18,7 @@ public class BeatLoader {
                 title = directory.getName().split(" - ")[1];
                 for(final File f : directory.listFiles()){
                     if(f.getName().contains(".wav") || f.getName().contains(".mp3")){
-                        audioFile = new Audio(f.getAbsolutePath());
+                        audioFile = new Music(f.getAbsolutePath());
                     }
                     else if(f.getName().contains(".drf")){
                         try(BufferedReader r = new BufferedReader(new FileReader(f))){
