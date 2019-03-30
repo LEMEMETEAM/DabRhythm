@@ -46,6 +46,8 @@ public class Main extends App {
         graphics = engine.createGraphics();
 
         Beats.updateList();
+        Skins.updateSkins();
+        SkinLoader.load("Default Skin");
 
         SceneManager.addScene(new IntroScene());
         SceneManager.addScene(new MenuScene());
@@ -91,6 +93,9 @@ public class Main extends App {
 
         public static Texture score_percent;
         public static Texture score_x;
+
+        public static final Texture[] count = new Texture[3];
+        public static Texture go;
 
     }
 }

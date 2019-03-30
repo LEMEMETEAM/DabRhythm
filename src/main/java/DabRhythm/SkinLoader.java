@@ -6,12 +6,62 @@ import Graphics.Models.Texture;
 
 public class SkinLoader {
 
-    public static boolean load(String skinName){
+    public static void load(String skinName){
         File temp = Skins.skins.get(skinName);
         for(File f : temp.listFiles()){
             if(f.isFile()){
                 String name = stripExtension(f.getName()).replace("@2x", "");
-                if(name.contains("mania-key"))
+                if(name.contains("mania-key")){
+                    if(name.contains("D")){
+                        int num = Integer.valueOf(name.replace("mania-key", "").replace("D", ""));
+                        Main.Skin.mania_key_down[num - 1] = new Texture(f.getAbsolutePath());
+                        continue;
+                    }
+                    else{
+                        int num = Integer.valueOf(name.replace("mania-key", ""));
+                        Main.Skin.mania_key[num - 1] = new Texture(f.getAbsolutePath());
+                        continue;
+                    }
+                }
+                if(name.contains("score")){
+                    if(name.contains("x")){
+                        Main.Skin.score_x = new Texture(f.getAbsolutePath());
+                        continue;
+                    }
+                    else if(name.contains("percent")){
+                        Main.Skin.score_percent = new Texture(f.getAbsolutePath());
+                        continue;
+                    }
+                    else{
+                        int num = Integer.valueOf(name.replace("score-", ""));
+                        Main.Skin.score[num] = new Texture(f.getAbsolutePath());
+                        continue;
+                    }
+                }
+                if(name.contains("default")){
+                    int num = Integer.valueOf(name.replace("default-", ""));
+                    Main.Skin.normal[num] = new Texture(f.getAbsolutePath());
+                    continue;
+                }
+                if(name.contains("combo")){
+                    int num = Integer.valueOf(name.replace("combo-", ""));
+                    Main.Skin.combo[num] = new Texture(f.getAbsolutePath());
+                    continue;
+                }
+                if(name.contains("note")){
+                    int num = Integer.valueOf(name.replace("mania-note", ""));
+                    Main.Skin.note[num - 1] = new Texture(f.getAbsolutePath());
+                    continue;
+                }
+                if(name.contains("count")){
+                    int num = Integer.valueOf(name.replace("count", ""));
+                    Main.Skin.count[num - 1] = new Texture(f.getAbsolutePath());
+                    continue;
+                }
+                if(name.equals("Go")){
+                    Main.Skin.go = new Texture(f.getAbsolutePath());
+                    continue;
+                }
             }
         }
     }

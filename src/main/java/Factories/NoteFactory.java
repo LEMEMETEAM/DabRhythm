@@ -7,20 +7,23 @@ import Components.CBeatLine;
 import Components.CNote;
 import DabRhythm.LanePosCalculator;
 import DabRhythm.Main;
+import Entities.Entity;
 import Entities.EntityManager;
+import Entities.Components.CCollision;
 import Entities.Components.CPolygon;
 import Entities.Components.CSprite;
 import Entities.Components.CTransform;
 import Graphics.Batch.Polygon;
+import Graphics.Models.AABB;
 import Graphics.Models.Texture;
 
 public class NoteFactory {
 
     public static void spawnNote(int lane, float beatTime){
-        EntityManager.createEntity(
+        Entity e = EntityManager.createEntity(
             new CSprite(){
                 {
-                    texture = new Texture("Skins/mania-note" + lane + ".png");
+                    texture = Main.Skin.note[lane - 1];
                     color = new Vector4f(1);
                     center_anchor = true;
                 }
@@ -34,9 +37,16 @@ public class NoteFactory {
             new CNote(){
                 {
                     noteTime = beatTime;
+                    lane_num = lane;
                 }
             }
         );
+        e.addComponent(new CCollision(){
+            {
+                bounds = new AABB();
+                bounds.correctBounds(e);
+            }
+        });
     }
 
     public static void spawnBeatLine(float beatLineTime){

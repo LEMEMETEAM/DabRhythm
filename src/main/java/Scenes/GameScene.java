@@ -13,9 +13,11 @@ import DabRhythm.Main;
 import Entities.Entity;
 import Entities.EntityManager;
 import Entities.Components.*;
+import Graphics.Models.AABB;
 import Graphics.Models.Texture;
 import Systems.KeyPressSystem;
 import Systems.NoteDeleteSystem;
+import Systems.NoteHitSystem;
 import Systems.NoteScrollSystem;
 import Systems.PolygonRenderSystem;
 import Systems.SongManagerSystem;
@@ -29,6 +31,9 @@ public class GameScene extends Scene {
     private WeakReference<ArrayList<Entity>> cache = new WeakReference<>(new ArrayList<>());
     public static boolean beat_start;
     public static float strumLine = Main.engine.getMainWindow().getHeight() * 0.85f;
+    public static long score;
+    public static long combo;
+    public static float accuracy;
 
     public GameScene(Beat beat_ref) {
         this.beat_ref = beat_ref;
@@ -37,13 +42,16 @@ public class GameScene extends Scene {
     @Override
     public void init() {
         EntityManager.entities.clear();
+        score = 0;
+        combo = 0;
+        accuracy = 0.00f;
         for(int i = 1; i < 5; i++){
             int _lane = i;
             CHitButton hb = new CHitButton(){
                 {
                     lane = _lane;
-                    pressTexture = new Texture("Skins/mania-key" + lane + ".png");
-                    unpressTexture = new Texture("Skins/mania-key" + lane + "D.png");
+                    pressTexture = Main.Skin.mania_key[lane - 1];
+                    unpressTexture = Main.Skin.mania_key_down[lane - 1];
                 }
             };
             Entity e = EntityManager.createEntity(
@@ -63,6 +71,12 @@ public class GameScene extends Scene {
                     }
                 }
             );
+            e.addComponent(new CCollision(){
+                {
+                    bounds = new AABB();
+                    bounds.correctBounds(e);
+                }
+            });
         }
 
         addSystem(new KeyPressSystem());
@@ -72,6 +86,7 @@ public class GameScene extends Scene {
         addSystem(new NoteScrollSystem());
         addSystem(new PolygonRenderSystem());
         addSystem(new NoteDeleteSystem());
+        addSystem(new NoteHitSystem());
 
         Timer.start();
     }
@@ -81,28 +96,28 @@ public class GameScene extends Scene {
     public void tick() {
         super.tick();
         if(Timer.counter >= 1 * Main.engine.TARGET_FPS && !called1){
-            Entity three = spawnCountdown(new Texture("Skins/count3.png"));
+            Entity three = spawnCountdown(Main.Skin.count[3 - 1]);
                 cache.get().add(three);
                 called1 = true;
         }
         if(Timer.counter >= 2 * Main.engine.TARGET_FPS && !called2){
             EntityManager.deleteEntity(cache.get().get(0).entityID);
             cache.get().remove(0);
-            Entity two = spawnCountdown(new Texture("Skins/count2.png"));
+            Entity two = spawnCountdown(Main.Skin.count[2 - 1]);
             cache.get().add(two);
             called2 = true;
         }
         if(Timer.counter >= 3 * Main.engine.TARGET_FPS && !called3){
             EntityManager.deleteEntity(cache.get().get(0).entityID);
             cache.get().remove(0);
-            Entity one = spawnCountdown(new Texture("Skins/count1.png"));
+            Entity one = spawnCountdown(Main.Skin.count[1 - 1]);
             cache.get().add(one);
             called3 = true;
         }
         if(Timer.counter >= 4 * Main.engine.TARGET_FPS && !called4){
             EntityManager.deleteEntity(cache.get().get(0).entityID);
             cache.get().remove(0);
-            Entity go = spawnCountdown(new Texture("Skins/Go.png"));
+            Entity go = spawnCountdown(Main.Skin.go);
             cache.get().add(go);
             called4 = true;
         }

@@ -36,11 +36,11 @@ public class SongBrowserMenu extends AbstractMenu {
                         new Button(){
                             {   
                                 label = b.title;
-                                size = new Vector2f(550, 100);
-                                pos = new Vector2f(0, size.y * index);
+                                size = new Vector2f(size_temp.x, 50);
+                                pos = new Vector2f(size_temp.x / 2, (size.y * index) + (size.y/2));
                                 color= new Vector4f(0.5f);
                                 label_color = new Vector4f(1);
-                                label_pos = new Vector2f(0.0f);
+                                label_pos = new Vector2f(-size.x/2, -size.y/2);
                                 label_size = 48f;
                                 poly = new Polygon(
                                     new int[]{
@@ -48,10 +48,10 @@ public class SongBrowserMenu extends AbstractMenu {
                                         0,3,2
                                     },
                                     new Vector2f[]{
-                                        new Vector2f(0,0),
-                                        new Vector2f(0,1),
+                                        new Vector2f(-1,-1),
+                                        new Vector2f(-1,1),
                                         new Vector2f(1,1),
-                                        new Vector2f(1,0)
+                                        new Vector2f(1,-1)
                                     }
                                 );
                             }
