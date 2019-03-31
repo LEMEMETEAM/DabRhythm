@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
+import Components.CHUD;
 import Components.CHitButton;
 import DabRhythm.Beat;
 import DabRhythm.LanePosCalculator;
@@ -13,8 +14,10 @@ import DabRhythm.Main;
 import Entities.Entity;
 import Entities.EntityManager;
 import Entities.Components.*;
+import GUI.Components.CText;
 import Graphics.Models.AABB;
 import Graphics.Models.Texture;
+import Systems.HUDRenderSystem;
 import Systems.KeyPressSystem;
 import Systems.NoteDeleteSystem;
 import Systems.NoteHitSystem;
@@ -22,6 +25,7 @@ import Systems.NoteScrollSystem;
 import Systems.PolygonRenderSystem;
 import Systems.SongManagerSystem;
 import Systems.SpriteRenderSystem;
+import Systems.TextRenderSystem;
 import System.ActionSystem;
 import Utils.Timer;
 
@@ -45,6 +49,21 @@ public class GameScene extends Scene {
         score = 0;
         combo = 0;
         accuracy = 0.00f;
+        Entity image = EntityManager.createEntity(
+            new CSprite(){
+                {
+                    texture = beat_ref.background;
+                    color = new Vector4f(1f,1f,1f,0.375f);
+                    center_anchor = false;
+                }
+            },
+            new CTransform(){
+                {
+                    pos = new Vector2f();
+                    size = new Vector2f(Main.engine.getMainWindow().getWidth(), Main.engine.getMainWindow().getHeight());
+                }
+            }
+        );
         for(int i = 1; i < 5; i++){
             int _lane = i;
             CHitButton hb = new CHitButton(){
@@ -79,6 +98,66 @@ public class GameScene extends Scene {
             });
         }
 
+        Entity comboE = EntityManager.createEntity(
+            new CText(){
+                {
+                    text = String.valueOf(combo);
+                    color = new Vector4f(1);
+                }
+            },
+            new CTransform(){
+                {
+                    size = new Vector2f(36);
+                    pos = new Vector2f(Main.engine.getMainWindow().getWidth()/2, 100);
+                }
+            },
+            new CHUD(){
+                {
+                    hud = HUD.COMBO;
+                }
+            }
+        );
+
+        Entity scoreE = EntityManager.createEntity(
+            new CText(){
+                {
+                    text = String.valueOf(score);
+                    color = new Vector4f(1);
+                }
+            },
+            new CTransform(){
+                {
+                    size = new Vector2f(72);
+                    pos = new Vector2f(Main.engine.getMainWindow().getWidth()/2, comboE.getComponent(CTransform.class).pos.y - size.y);
+                }
+            },
+            new CHUD(){
+                {
+                    hud = HUD.SCORE;
+                }
+            }
+        );
+
+        Entity accE = EntityManager.createEntity(
+            new CText(){
+                {
+                    text = String.valueOf(accuracy);
+                    color = new Vector4f(1);
+                }
+            },
+            new CTransform(){
+                {
+                    pos = new Vector2f(Main.engine.getMainWindow().getWidth()/2, comboE.getComponent(CTransform.class).pos.y + comboE.getComponent(CTransform.class).size.y);
+                    size = new Vector2f(32);
+                }
+            },
+            new CHUD(){
+                {
+                    hud = HUD.ACC;
+                }
+            }
+        );
+
         addSystem(new KeyPressSystem());
         addSystem(new SpriteRenderSystem());
         addSystem(new ActionSystem());
@@ -87,6 +166,8 @@ public class GameScene extends Scene {
         addSystem(new PolygonRenderSystem());
         addSystem(new NoteDeleteSystem());
         addSystem(new NoteHitSystem());
+        addSystem(new TextRenderSystem());
+        addSystem(new HUDRenderSystem());
 
         Timer.start();
     }
@@ -129,6 +210,7 @@ public class GameScene extends Scene {
                 called5 = true;
                 beat_start = true;
         }
+        System.out.println("Score = " + score + ", Combo = " + combo + ", Accuracy = " + accuracy);
     }
 
     private Entity spawnCountdown(Texture tex){
