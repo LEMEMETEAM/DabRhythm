@@ -62,6 +62,21 @@ public class SkinLoader {
                     Main.Skin.go = new Texture(f.getAbsolutePath());
                     continue;
                 }
+                if(name.contains("mania-hit")){
+                    int num = Integer.valueOf(name.replace("mania-hit", ""));
+                    switch(num){
+                        case 50:
+                            Main.Skin.hit50 = new Texture(f.getAbsolutePath());
+                        case 100:
+                            Main.Skin.hit100 = new Texture(f.getAbsolutePath());
+                        case 200:
+                            Main.Skin.hit200 = new Texture(f.getAbsolutePath());
+                        case 300:
+                            Main.Skin.hit300 = new Texture(f.getAbsolutePath());
+                        case 0:
+                            Main.Skin.hit0 = new Texture(f.getAbsolutePath());
+                    }
+                }
             }
         }
     }

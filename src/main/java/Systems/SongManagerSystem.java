@@ -17,6 +17,7 @@ public class SongManagerSystem extends System {
     public Beat beat;
     public float songPosInBeats;
     public float secPerBeat;
+    public int notesSoFar;
     private int currentIndex;
     private float scroll_num;
 
@@ -50,6 +51,7 @@ public class SongManagerSystem extends System {
                 for(int i = 0; i < lane_info.length; i++){
                     if(Integer.parseInt(lane_info[i]) != 0){
                         NoteFactory.spawnNote(i + 1, keys[currentIndex]);
+                        notesSoFar++;
                     }
                 }
                 currentIndex++;

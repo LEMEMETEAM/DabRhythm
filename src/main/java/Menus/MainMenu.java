@@ -14,8 +14,13 @@ import Input.MouseEvent;
 import Observer.Event;
 import Scenes.SceneManager;
 import Scenes.SongBrowserScene;
+import Utils.Timer;
+import Easing.*;
 
 import static org.lwjgl.glfw.GLFW.*;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 public class MainMenu extends AbstractMenu {
     
@@ -153,17 +158,31 @@ public class MainMenu extends AbstractMenu {
                 label_size = 72f;
             }
 
+            CompletableFuture<Void> easeIn = null;
+            CompletableFuture<Void> easeOut = null;
             @Override
             public void action() {
-                if(!main_button_pressed_once){
-                    pos.x -= 100f;
+                if(!main_button_pressed_once && (easeOut == null || easeOut.isDone())){
+                    easeIn = CompletableFuture.runAsync(() -> {
+                        Timer.start();
+                        while(Timer.counter <= 0.25f * Main.engine.TARGET_FPS){
+                            pos.x = Easing.LINEAR.ease(Timer.counter, (Main.engine.getMainWindow().getWidth()/2), (Main.engine.getMainWindow().getWidth()/2)-100, 0.25f * (float)Main.engine.TARGET_FPS);
+                        }
+                        Timer.stop();
+                    });
                     main_button_pressed_once = true;
                     panel.addToPanel(start);
                     panel.addToPanel(exit);
                     return;
                 }
-                if(main_button_pressed_once){
-                    pos.x += 100f;
+                if(main_button_pressed_once && (easeIn == null || easeIn.isDone())){
+                    easeOut = CompletableFuture.runAsync(() -> {
+                        Timer.start();
+                        while(Timer.counter <= 0.25f * Main.engine.TARGET_FPS){
+                            pos.x = Easing.LINEAR.ease(Timer.counter, (Main.engine.getMainWindow().getWidth()/2)-100, (Main.engine.getMainWindow().getWidth()/2), 0.25f * (float)Main.engine.TARGET_FPS);
+                        }
+                        Timer.stop();
+                    });
                     main_button_pressed_once = false;
                     panel.panel_objects.remove(start);
                     panel.panel_objects.remove(exit);

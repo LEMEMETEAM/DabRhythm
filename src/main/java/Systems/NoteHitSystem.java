@@ -2,61 +2,88 @@ package Systems;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 import org.joml.Vector2f;
+import org.joml.Vector4f;
 
 import Components.CHitButton;
 import Components.CNote;
+import DabRhythm.Main;
+import DabRhythm.Main.Judgement.Judge;
 import Entities.Entity;
 import Entities.EntityManager;
-import Entities.Components.CCollision;
+import Entities.Components.CSprite;
+import Entities.Components.CTransform;
 import Graphics.Graphics;
 import Scenes.GameScene;
 import System.System;
-import Utils.Pair;
+import Utils.Timer;
 
 public class NoteHitSystem extends System {
 
     private ArrayList<Entity> skip = new ArrayList<>();
     private int notesHit = 0;
+    private CompletableFuture<Void> signAsync;
 
     @Override
     public void update() {
-        for(Entity e : EntityManager.entitiesWithComponents(CHitButton.class)){
-            CHitButton hb = e.getComponent(CHitButton.class);
-            if(hb.pressed){
-                for(Entity e2 : EntityManager.entitiesWithComponents(CNote.class)){
-                    CNote n = e2.getComponent(CNote.class);
-                    if(hb.lane == n.lane_num){
-                        CCollision e_c = e.getComponent(CCollision.class);
-                        CCollision e2_c = e2.getComponent(CCollision.class);
-                        Pair<Boolean, Vector2f> temp;
-                        if((temp = e2_c.bounds.intersects(e_c.bounds)).left && !skip.contains(e2)){
+        for(Entity hitButton : EntityManager.entitiesWithComponents(CHitButton.class)){
+            CHitButton hb = hitButton.getComponent(CHitButton.class);
+            for(Entity note : EntityManager.entitiesWithComponents(CNote.class)){
+                CNote n = note.getComponent(CNote.class);
+                if(hb.lane != n.lane_num){
+                    continue;
+                }
+                if(hb.pressed && !n.skip){
+                    float delta = (this.scene.getSystem(SongManagerSystem.class).songPosInBeats * this.scene.getSystem(SongManagerSystem.class).secPerBeat) - (n.noteTime * this.scene.getSystem(SongManagerSystem.class).secPerBeat);
+                    Judge j = Main.Judgement.getJudge(delta);
+                    switch(j){
+                        case HIT_300:
+                        case HIT_200:
+                        case HIT_100:
+                        case HIT_50:
+                            if(signAsync != null && !signAsync.isDone()){
+                                signAsync.completeAsync(() -> {
+                                    Timer.stop();
+                                    return null;
+                                });
+                            }
+                            signAsync = CompletableFuture.supplyAsync(() -> {
+                                Timer.start();
+                                Entity e = EntityManager.createEntity(
+                                    new CSprite(){
+                                        {
+                                            texture = j.getSign();
+                                            color = new Vector4f(1);
+                                            center_anchor = true;
+                                        }
+                                    },
+                                    new CTransform(){
+                                        {
+                                            pos = new Vector2f(Main.engine.getMainWindow().getWidth()/2, Main.engine.getMainWindow().getHeight()*0.65f);
+                                            size = new Vector2f(Main.Skin.hit300.width, Main.Skin.hit300.height);
+                                        }
+                                    }
+                                ); 
+                                while(Timer.counter <= 0.25f * Main.engine.TARGET_FPS);
+                                Timer.stop();
+                                return e;
+                            }).thenAccept(e -> EntityManager.deleteEntity(e.entityID));
                             GameScene.combo++;
                             notesHit++;
-                            GameScene.accuracy = ((float)notesHit / this.scene.getSystem(SongManagerSystem.class).beat.hits.size()) * 100f;
-                            if((temp.right.y > -17 && temp.right.y <= 0) || (temp.right.y < -100+17 && temp.right.y >= -100)){
-                                GameScene.score += 2 * GameScene.combo;
-                            }
-                            else if((temp.right.y > -34 && temp.right.y <= -17) || (temp.right.y < -100+34 && temp.right.y >= -100+17)){
-                                GameScene.score += 5 * GameScene.combo;
-                            }
-                            else if((temp.right.y > -50 && temp.right.y <= -34) || (temp.right.y < -100+50 && temp.right.y >= -100+34)){
-                                GameScene.score += 10 * GameScene.combo;
-                            }
-                            EntityManager.deleteEntity(e2.entityID);
-                        }
-                        else{
+                            GameScene.score += j.getScore() * GameScene.combo;
+                            EntityManager.deleteEntity(note.entityID);
+                            break;
+                        case HIT_MISS:
+                        case HIT_NULL:
                             GameScene.combo = 0;
-                            skip.add(e2);
-                        }
+                            n.skip = true;
+                            break;
+
                     }
-                    if(!EntityManager.entities.containsValue(e2)){
-                        if(skip.contains(e2)){
-                            skip.remove(e2);
-                        }
-                    }
+                    GameScene.accuracy = ((float)notesHit / this.scene.getSystem(SongManagerSystem.class).notesSoFar) * 100f;
                 }
             }
         }

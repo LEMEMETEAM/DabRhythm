@@ -14,5 +14,6 @@ public class Beat {
     public int id;
     public String title;
     public float BPM;
+    public int beatNum;
     
 }

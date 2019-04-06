@@ -30,6 +30,7 @@ public class BeatLoader {
                                     BPM = Float.parseFloat(beat_lane_type[1]);
                                     continue;
                                 }
+                                beatNum = beat_lane_type[1].replaceAll("0", "").length();
                                 hits.put(Float.valueOf(beat_lane_type[0]),  beat_lane_type[1]);
                             }
                         }

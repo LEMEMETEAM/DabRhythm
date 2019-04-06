@@ -2,6 +2,7 @@ package Scenes;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.joml.Vector2f;
 import org.joml.Vector4f;
@@ -17,6 +18,7 @@ import Entities.Components.*;
 import GUI.Components.CText;
 import Graphics.Models.AABB;
 import Graphics.Models.Texture;
+import Input.InputHandler;
 import Systems.HUDRenderSystem;
 import Systems.KeyPressSystem;
 import Systems.NoteDeleteSystem;
@@ -29,6 +31,8 @@ import Systems.TextRenderSystem;
 import System.ActionSystem;
 import Utils.Timer;
 
+import static org.lwjgl.glfw.GLFW.*;
+
 public class GameScene extends Scene {
 
     private Beat beat_ref;
@@ -38,6 +42,7 @@ public class GameScene extends Scene {
     public static long score;
     public static long combo;
     public static float accuracy;
+    public static int scoreLength = 6, comboLength = 2;
 
     public GameScene(Beat beat_ref) {
         this.beat_ref = beat_ref;
@@ -98,66 +103,79 @@ public class GameScene extends Scene {
             });
         }
 
-        Entity comboE = EntityManager.createEntity(
-            new CText(){
-                {
-                    text = String.valueOf(combo);
-                    color = new Vector4f(1);
+        float pos_Y = 100F;
+        for(int c = comboLength - 1; c >= 0; c--){
+            int C = c;
+            Entity comboE = EntityManager.createEntity(
+                new CSprite(){
+                    {
+                        texture = Main.Skin.combo[0];
+                        color = new Vector4f(1);
+                    }
+                },
+                new CTransform(){
+                    {
+                        size = new Vector2f(Main.Skin.combo[0].width/4, Main.Skin.combo[0].height/4);
+                        pos = new Vector2f((size.x * C) + (Main.engine.getMainWindow().getWidth()/2), pos_Y);
+                    }
+                },
+                new CHUD(){
+                    {
+                        hud = HUD.COMBO;
+                        unit = C;
+                    }
                 }
-            },
-            new CTransform(){
-                {
-                    size = new Vector2f(36);
-                    pos = new Vector2f(Main.engine.getMainWindow().getWidth()/2, 100);
-                }
-            },
-            new CHUD(){
-                {
-                    hud = HUD.COMBO;
-                }
-            }
-        );
+            );
+        }
 
-        Entity scoreE = EntityManager.createEntity(
-            new CText(){
-                {
-                    text = String.valueOf(score);
-                    color = new Vector4f(1);
+        for(int s = scoreLength - 1; s >= 0; s--){
+            int S = s;
+            Entity scoreE = EntityManager.createEntity(
+                new CSprite(){
+                    {
+                        texture = Main.Skin.score[0];
+                        color = new Vector4f(1);
+                    }
+                },
+                new CTransform(){
+                    {
+                        size = new Vector2f(Main.Skin.score[0].width/2, Main.Skin.score[0].height/2);
+                        pos = new Vector2f((size.x * S) + (Main.engine.getMainWindow().getWidth()/2), pos_Y - size.y);
+                    }
+                },
+                new CHUD(){
+                    {
+                        hud = HUD.SCORE;
+                        unit = S;
+                    }
                 }
-            },
-            new CTransform(){
-                {
-                    size = new Vector2f(72);
-                    pos = new Vector2f(Main.engine.getMainWindow().getWidth()/2, comboE.getComponent(CTransform.class).pos.y - size.y);
-                }
-            },
-            new CHUD(){
-                {
-                    hud = HUD.SCORE;
-                }
-            }
-        );
+            );
+        }
 
-        Entity accE = EntityManager.createEntity(
-            new CText(){
-                {
-                    text = String.valueOf(accuracy);
-                    color = new Vector4f(1);
+        /*char[] numsA = String.valueOf(accuracy).toCharArray();
+        for(int a = numsA.length - 1; a >= 0; a--){
+            int A = a;
+            Entity accE = EntityManager.createEntity(
+                new CSprite(){
+                    {
+                        texture = Main.Skin.normal[Integer.parseInt(String.valueOf(numsA[A]))];
+                        color = new Vector4f(1);
+                    }
+                },
+                new CTransform(){
+                    {
+                        size = new Vector2f(Main.Skin.normal[0].width/8, Main.Skin.normal[0].height/8);
+                        pos = new Vector2f((size.x * A) + (Main.engine.getMainWindow().getWidth()/2), pos_Y + (Main.Skin.combo[0].height/8));
+                    }
+                },
+                new CHUD(){
+                    {
+                        hud = HUD.ACC;
+                    }
                 }
-            },
-            new CTransform(){
-                {
-                    pos = new Vector2f(Main.engine.getMainWindow().getWidth()/2, comboE.getComponent(CTransform.class).pos.y + comboE.getComponent(CTransform.class).size.y);
-                    size = new Vector2f(32);
-                }
-            },
-            new CHUD(){
-                {
-                    hud = HUD.ACC;
-                }
-            }
-        );
-
+            );
+        }*/
+        
         addSystem(new KeyPressSystem());
         addSystem(new SpriteRenderSystem());
         addSystem(new ActionSystem());
@@ -210,7 +228,11 @@ public class GameScene extends Scene {
                 called5 = true;
                 beat_start = true;
         }
-        System.out.println("Score = " + score + ", Combo = " + combo + ", Accuracy = " + accuracy);
+
+        if(InputHandler.INSTANCE.isKeyPressed(GLFW_KEY_ESCAPE)){
+            beat_ref.audioFile.pauseSample();
+            
+        }
     }
 
     private Entity spawnCountdown(Texture tex){

@@ -10,12 +10,12 @@ import Graphics.ProjectionMatrix;
 import Graphics.Batch.SpriteBatch;
 import Graphics.Models.Texture;
 import Menus.MainMenu;
-import Scenes.IntroScene;
 import Scenes.MenuScene;
 import Scenes.Scene;
 import Scenes.SceneManager;
 import Scenes.SongBrowserScene;
 import System.RenderSystem;
+import States.*;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -29,8 +29,8 @@ public class Main extends App {
     private Graphics graphics;
 
     {
-        WIDTH = 800;
-        HEIGHT = 600;
+        WIDTH = 960;
+        HEIGHT = 540;
         TITLE = "DabRhythm";
         hints = new HashMap<>() {
             {
@@ -49,11 +49,10 @@ public class Main extends App {
         Skins.updateSkins();
         SkinLoader.load("Default Skin");
 
-        SceneManager.addScene(new IntroScene());
         SceneManager.addScene(new MenuScene());
         SceneManager.addScene(new SongBrowserScene());
 
-        SceneManager.setCurrentScene(SceneManager.getScene(IntroScene.class));
+        SceneManager.setCurrentScene(SceneManager.getScene(MenuScene.class));
     }
 
     public void render() {
@@ -63,7 +62,6 @@ public class Main extends App {
 
     public void update() {
         SceneManager.getCurrentScene().tick();
-        //System.out.println(EntityManager.entities.toString());
     }
 
     public static void main(String[] args) {
@@ -97,5 +95,51 @@ public class Main extends App {
         public static final Texture[] count = new Texture[3];
         public static Texture go;
 
+        public static Texture hit0, hit50, hit100, hit200, hit300;
+
+    }
+
+    public static class Judgement {
+
+        public enum Judge {
+            HIT_MISS(0.4f, 0, Main.Skin.hit0),
+            HIT_300(0.025f, 300, Main.Skin.hit300),
+            HIT_200(0.05f, 200, Main.Skin.hit200),
+            HIT_100(0.1f, 100, Main.Skin.hit100),
+            HIT_50(0.2f, 50, Main.Skin.hit50),
+            HIT_NULL(0, 0, Main.Skin.hit0);
+
+            private float hitWindow;
+            private int score;
+            private Texture sign;
+            Judge(float window, int score, Texture sign){
+                this.hitWindow = window;
+                this.score = score;
+                this.sign = sign;
+            }
+
+            public float getHitWindow(){
+                return hitWindow;
+            }
+
+            public float getScore(){
+                return score;
+            }
+
+            public Texture getSign(){
+                return sign;
+            }
+        }
+
+        public static Judge getJudge(float delta){
+            delta = Math.abs(delta);
+            Judge result = Judge.HIT_NULL;
+            for(Judge j : Judge.values()){
+                if(delta <= j.getHitWindow()){
+                    result = j;
+                }
+            }
+            return result;
+        }
     }
 }

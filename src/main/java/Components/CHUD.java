@@ -10,4 +10,5 @@ public class CHUD extends Component {
         ACC
     }
     public HUD hud;
+    public int unit;
 }
